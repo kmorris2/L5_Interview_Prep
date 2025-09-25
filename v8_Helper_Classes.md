@@ -11,22 +11,28 @@ With CSS Modules, both .module.css and .module.scss scope class names locally. T
 
 ### Pros & cons (in practice)
 **Sass (SCSS)**
+
 **Pros**
 * Ergonomic authoring: mixins/functions/loops reduce repetition.
 * Clean module system (@use) to share design utilities.
 * Powerful compile-time math & color transforms.
 * Works great inside .module.scss—keeps files tidy.
+* 
 **Cons**
 * Extra build step, dependency on a compiler (Dart Sass).
 * Variables are not themeable at runtime; you need CSS custom properties for live theming/dark mode.
 * Over-nesting and @extend can create brittle specificity/output if misused.
 * Increasing overlap with native CSS reduces the need for Sass in many codebases.
+
+  
 **Plain CSS**
+  
 **Pros**
 * Zero compile layer; what you write is what ships.
 * Runtime theming via custom properties; excellent with CSS Modules.
 * New features cover many historical Sass use-cases (nesting, layers, container queries).
 * Simpler toolchain and faster builds.
+  
 **Cons**
 * No loops/conditionals/mixins; repetitive patterns can get verbose.
 * Some authoring conveniences (math, color functions breadth) still feel nicer in Sass.
