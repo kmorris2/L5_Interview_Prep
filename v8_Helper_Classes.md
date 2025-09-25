@@ -47,6 +47,8 @@ High-Level Differences: CSS vs Sass for Helper Classes
 |Design Token Support|	✅ Native CSS var import (@import url(...))|	✅ Works via Sass variables or custom maps|
 
 
+
+
 ⚙️ Key Differences: CSS Modules vs Helper Classes
 |Feature|	CSS Modules	Global| Helper Classes (your .css)|
 |---|---|---|
@@ -60,6 +62,7 @@ High-Level Differences: CSS vs Sass for Helper Classes
 
 
 
+
 🔍 Why Move Helper Classes from Sass to Plain .css
 
 ✅ Benefits
@@ -70,6 +73,9 @@ High-Level Differences: CSS vs Sass for Helper Classes
 |Cross-platform compatibility	|Your CSS files can be used in environments where SASS isn’t supported (like web components or design token automation).|
 |Easier testing / snapshotting|	Flat CSS maps more predictably to DOM snapshots and Percy regression diffs.|
 |Separation of concerns|	You now clearly separate layout utilities (global CSS) from component styles (CSS Modules).|
+
+
+
 
 ❌ Tradeoffs / Challenges
 |Limitation|	Workaround|
