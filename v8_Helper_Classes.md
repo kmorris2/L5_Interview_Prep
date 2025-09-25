@@ -36,50 +36,54 @@ With CSS Modules, both .module.css and .module.scss scope class names locally. T
 
 High-Level Differences: CSS vs Sass for Helper Classes
 |Feature	|CSS Modules (.module.css)|	Sass (.scss)|
-Variables	Uses native CSS variables (--token) or imported ones via @import	Uses Sass variables ($var) with preprocessing
-Nesting & Mixins	❌ No native support (though PostCSS can help)	✅ Built-in via nesting and mixins
-Loops & Maps	❌ Not supported	✅ Powerful loops (@each) and maps
-Type Safety in TS	✅ Works out of the box with *.module.css.d.ts	❌ Manual effort or custom typings
-Toolchain Simplicity	✅ Just needs PostCSS + CSS loader	⚠️ Requires Sass loader/configuration
-Interoperability with TS	✅ Easy to import like a JS object	⚠️ Not naturally module-scoped without naming conventions
-Scoping	✅ Automatic with CSS Modules	❌ Global unless manually scoped or using BEM-like convention
-Design Token Support	✅ Native CSS var import (@import url(...))	✅ Works via Sass variables or custom maps
+|---|---|---|
+|Variables|	Uses native CSS variables (--token) or imported ones via @import|	Uses Sass variables ($var) with preprocessing|
+|Nesting & Mixins|	❌ No native support (though PostCSS can help)|	✅ Built-in via nesting and mixins
+|Loops & Maps|	❌ Not supported|	✅ Powerful loops (@each) and maps|
+|Type Safety in TS|	✅ Works out of the box with *.module.css.d.ts|	❌ Manual effort or custom typings|
+|Toolchain Simplicity|	✅ Just needs PostCSS + CSS loader|	⚠️ Requires Sass loader/configuration|
+|Interoperability with TS|	✅ Easy to import like a JS object|	⚠️ Not naturally module-scoped without naming conventions|
+|Scoping|	✅ Automatic with CSS Modules|	❌ Global unless manually scoped or using BEM-like convention|
+|Design Token Support|	✅ Native CSS var import (@import url(...))|	✅ Works via Sass variables or custom maps|
 
 
 ⚙️ Key Differences: CSS Modules vs Helper Classes
-Feature	CSS Modules	Global Helper Classes (your .css)
-Scope	Local per component	Global (available app-wide)
-Use case	Component-specific styles	Reusable layout/utility/spacing helpers
-Naming	Scoped via hashing (.Button_xyz)	Prefixed manually (.hc-ml-1x, etc.)
-Import usage	import styles from './file.module.css'	import './_helper-classes.css' (or once globally)
-Class reference	styles['foo']	className="hc-ml-1x"
-Tree-shaking	Fully tree-shakable if unused	Not tree-shakable unless purged
-CSS strategy	Encapsulation	Atomic utility styling
+|Feature|	CSS Modules	Global| Helper Classes (your .css)|
+|---|---|---|
+|Scope|	Local per component|	Global (available app-wide)|
+|Use case|	Component-specific styles|	Reusable layout/utility/spacing helpers|
+|Naming|	Scoped via hashing (.Button_xyz)|	Prefixed manually (.hc-ml-1x, etc.)|
+|Import usage|	`import styles from './file.module.css'`|	`import './_helper-classes.css'` (or once globally)|
+|Class reference|	styles['foo']|	className="hc-ml-1x"|
+|Tree-shaking|	Fully tree-shakable if unused|	Not tree-shakable unless purged|
+|CSS strategy|	Encapsulation|	Atomic utility styling|
 
 
 
 🔍 Why Move Helper Classes from Sass to Plain .css
 
 ✅ Benefits
-Benefit	Explanation
-Simplicity	You’ve removed the need for SASS build tooling (like sass-loader) and now just rely on native CSS — easier to manage, debug, and onboard new contributors.
-Better token management	With @import of token .css files, you now get design tokens from a source-of-truth instead of relying on variable maps in SCSS.
-Cross-platform compatibility	Your CSS files can be used in environments where SASS isn’t supported (like web components or design token automation).
-Easier testing / snapshotting	Flat CSS maps more predictably to DOM snapshots and Percy regression diffs.
-Separation of concerns	You now clearly separate layout utilities (global CSS) from component styles (CSS Modules).
+|Benefit|	Explanation|
+|---|---|
+|Simplicity|	You’ve removed the need for SASS build tooling (like sass-loader) and now just rely on native CSS — easier to manage, debug, and onboard new contributors.|
+|Better token management|	With @import of token .css files, you now get design tokens from a source-of-truth instead of relying on variable maps in SCSS.|
+|Cross-platform compatibility	|Your CSS files can be used in environments where SASS isn’t supported (like web components or design token automation).|
+|Easier testing / snapshotting|	Flat CSS maps more predictably to DOM snapshots and Percy regression diffs.|
+|Separation of concerns|	You now clearly separate layout utilities (global CSS) from component styles (CSS Modules).|
 
 ❌ Tradeoffs / Challenges
-Limitation	Workaround
-No SASS features like loops or nesting	Write classes manually or use a CSS preprocessor step like PostCSS with postcss-nested or @apply.
-Harder to scale without SASS logic	You might need to script or generate future helpers via codemods or build-time token transforms.
-Global namespace risk	You're handling this well with .hc-* prefixing, which mitigates collisions.
-No dynamic class generation	Whereas SASS allowed loops for spacing, now you'd have to write (or generate) every spacing class individually.
+|Limitation|	Workaround|
+|---|---|
+|No SASS features like loops or nesting|	Write classes manually or use a CSS preprocessor step like PostCSS with postcss-nested or @apply.|
+|Harder to scale without SASS logic|	You might need to script or generate future helpers via codemods or build-time token transforms.|
+|Global namespace risk|	You're handling this well with .hc-* prefixing, which mitigates collisions.|
+|No dynamic class generation|	Whereas SASS allowed loops for spacing, now you'd have to write (or generate) every spacing class individually.|
 
 
 
-🤔 Why Not Use CSS Modules for Helper Classes?
+### 🤔 Why Not Use CSS Modules for Helper Classes?
 You made the right decision not to use CSS Modules for helper classes — here's why:
-❌ If You Used .module.css:
+❌ **If You Used .module.css:**
 * You'd have to import the CSS module (import styles from './_helper-classes.module.css') into every single component.
 * You’d also need to map every class usage like: className={styles['hc-ml-1x']}, which gets repetitive.
 * Worse, those class names would be hashed (like .hc-ml-1x_xyz123), making it harder to write global styles, debug snapshots, or apply styles conditionally.
@@ -88,17 +92,17 @@ You made the right decision not to use CSS Modules for helper classes — here's
 
 
 
-Theming with Native CSS Variables
+**Theming with Native CSS Variables**
 You're importing:
 
-@import url('@design-systems/formatted-tokens/...');
-This makes your helpers directly connected to tokens from your theme, without needing to precompile or map $vars → --tokens.
+`@import url('@design-systems/formatted-tokens/...');`
+This makes your helpers **directly connected to tokens** from your theme, without needing to precompile or map $vars → --tokens.
 This enables:
 * Theme overrides (light/dark) at runtime
 * Easier custom theming downstream (for consumers)
 * Less custom Sass tooling to manage tokens
 
-4. Simplified Build Tooling
+### 4. Simplified Build Tooling
 By using .css + native variables + CSS Modules:
 * You avoid needing to bundle/configure sass-loader
 * You stay closer to platform-native CSS (future-proofing)
