@@ -1,11 +1,11 @@
-# Input.Select Tech interview 
+## Input.Select Tech interview 
 
 
 
-🧠 1. Technical Decision-Making
-“Why did you build it this way?”
+### 🧠 1. Technical Decision-Making
+**“Why did you build it this way?”**
 
-✅ Be prepared to explain:
+## ✅ Be prepared to explain:
 * Why you used virtualized rendering (@tanstack/react-virtual):
     * Large option sets → perf bottlenecks.
     * Virtualization ensures only visible rows are rendered, reducing DOM load.
@@ -15,7 +15,7 @@
 * Why you didn’t use a prebuilt library like Downshift, HeadlessUI, MUI, etc.:
     * Needed to conform to your design system.
     * Custom styling and behavior like Tree variant, accessibility spec, and ref forwarding weren't supported out-of-box.
-🧩 Options you considered:
+### 🧩 Options you considered:
 * Alternatives to useVirtualizer:
     * react-window or no virtualization at all.
 * Accessibility via aria-activedescendant vs native focus shifting
@@ -25,45 +25,45 @@
     * If portal, explain how you synced focus and scroll behavior.
 
 
-⚙️ 2. Component Architecture & Extensibility
+### ⚙️ 2. Component Architecture & Extensibility
 “How can this scale to future use cases?”
-Show that your component is:
-* Modular:
+**Show that your component is:**
+* **Modular:**
     * Internal logic split across: SelectOptionsList, useDropdownNavigation, DropdownShell, etc.
-* Composable:
+* **Composable:**
     * Can support flat lists, tree structures (variant="tree"), single-select or multi-select with minimal changes.
-* Extensible:
+* *
     * You’ve planned for future needs like:
         * Search bar inside dropdown
         * Infinite scroll / async loading
         * Option groups (optgroup-style)
         * Support for aria-describedby in addition to aria-labelledby
-* Customizable through props:
+* **Customizable through props:**
     * Controlled/uncontrolled behavior for value.
     * Optional id for accessibility.
     * toggleRef, data-testid for testability.
 
 
-🔍 3. Performance & Accessibility
+### 🔍 3. Performance & Accessibility
 “Is this performant and accessible at scale?”
 
-Performance:
+**Performance:**
 * Virtualization reduces render cost on long option lists.
 * React.memo and useCallback (if used) prevent unnecessary re-renders.
 * Focus only set when necessary (avoiding layout thrashing).
 * requestAnimationFrame used to delay focus in some experimental logic — shows perf awareness.
-Accessibility:
+**Accessibility:**
 * Follows WAI-ARIA 1.2 Combobox + Listbox pattern:
     * role="listbox", aria-labelledby, aria-activedescendant or manual focus.
 * Keyboard navigation:
     * Arrow keys to move focus.
     * Tab, Enter, Esc behaviors handled.
-* Screen Reader behavior tested (likely via NVDA or VoiceOver).
+* **Screen Reader behavior tested** (likely via NVDA or VoiceOver).
 📌 You can reference that you’ve tested it using Cypress + Axe-core or manual screen reader passes.
 
-🧪 4. Testing Strategy
+### 🧪 4. Testing Strategy
 “How do you know it works?”
-Cypress & RTL:
+**Cypress & RTL:**
 * You used data-testids smartly (e.g., ${dataTestId}_option_${id}).
 * Cypress tests:
     * Open/close behavior
@@ -75,10 +75,19 @@ Cypress & RTL:
 * Mention percy visual regression if applicable.
 * Mention any accessibility testing tooling (e.g., cypress-axe, Storybook a11y).
 
-💡 5. Evolution of Your Code
+### 💡 5. Evolution of Your Code
 “How did this evolve?”
 You could describe a timeline like:
-Phase	Focus
+
+| Phase | Right Aligned |
+|:-------------|--------------:|
+| ✅ Initial Spike       | Build out the base dropdown using static rendering       |
+| Item B       | $25.50        |
+
+
+
+|Phase	|Focus|
+|---|---|
 ✅ Initial Spike	Build out the base dropdown using static rendering
 ⚡ Iteration 1	Add keyboard nav (useDropdownNavigation)
 🧠 Iteration 2	Add virtualization support
