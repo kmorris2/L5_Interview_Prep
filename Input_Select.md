@@ -88,11 +88,12 @@ You could describe a timeline like:
 
 |Phase	|Focus|
 |---|---|
-✅ Initial Spike	Build out the base dropdown using static rendering
-⚡ Iteration 1	Add keyboard nav (useDropdownNavigation)
-🧠 Iteration 2	Add virtualization support
-🧩 Iteration 3	Support Tree variant with nested groups
-♿ Final Polish	Refine accessibility, testing, RTL support
+|✅ Initial Spike|	Build out the base dropdown using static rendering |
+|⚡ Iteration 1|	Add keyboard nav (useDropdownNavigation) |
+|🧠 Iteration 2|	Add virtualization support|
+|🧩 Iteration 3|	Support Tree variant with nested groups |
+|♿ Final Polish|	Refine accessibility, testing, RTL support |
+
 Also highlight where you got feedback from UX/Accessibility team and how that shaped the final version.
 
 🚧 6. Challenges Faced
