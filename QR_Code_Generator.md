@@ -76,6 +76,7 @@ this.setState({ showError: true, retryDisabled: false }, () => {
 (Keep a ref on the Retry button; improves keyboard UX.)
 
 Q: How would you validate URLs robustly? 
+
 A:
 ```
 const isValidUrl = (v) => {
@@ -85,7 +86,9 @@ const isValidUrl = (v) => {
 ```
 Then gate state changes on isValidUrl(qRValue).
 
-Q: How did you keep tests stable through the migration? A: Test by role/label/testid, avoid implementation details, and pin regressions with Cypress E2E for critical flows.
+Q: How did you keep tests stable through the migration? 
+
+A: Test by role/label/testid, avoid implementation details, and pin regressions with Cypress E2E for critical flows.
 
 
 React Testing Library vs Enzyme (benefits to emphasize)
