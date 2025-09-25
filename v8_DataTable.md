@@ -104,12 +104,18 @@
     * Prefer server pagination for huge datasets; windowed rows with dynamic row height guardrails.
 
 Common interview questions → succinct answers
-* Q: Why TanStack v8? A: Headless, composable, and stable row/column models. It let me keep Canvas APIs simple while leveraging robust internals (sorting, resizing, grouping). Much faster/safer than reinventing grids.
-* Q: How did you resolve the v7 “null sort” pain? A: I exposed configurable sort cycles (global & per-column) and auto-seed the first allowed order if null isn’t allowed, so the icon and the data match on initial paint.
-* Q: How do you handle server vs client sorting? A: One onChange path. If sortMode='server' and onSortChange is provided, I forward the new SortingState. Otherwise I update context state and let TanStack compute the client result.
-* Q: What about performance at 10k rows? A: Memoized column defs + minimal state writes today; for 10k we’d add row virtualization (TanStack Virtual), consider column virtualization for wide tables, and debounced resize events.
-* Q: Accessibility? A: Sort controls are buttons with accurate labels describing the next state; aria-sort on headers reflects the current state. Tooltip triggers are focusable; resize is keyboard operable.
-* Q: How did you avoid the double borders with resizing? A: Resizer gets its own thin line via .resizable .resizer. When resizing is enabled, I suppress the grid’s right border on header cells (especially the last child) to avoid visual doubling.
+* Q: Why TanStack v8?
+    * A: Headless, composable, and stable row/column models. It let me keep Canvas APIs simple while leveraging robust internals (sorting, resizing, grouping). Much faster/safer than reinventing grids.
+* Q: How did you resolve the v7 “null sort” pain?
+    * A: I exposed configurable sort cycles (global & per-column) and auto-seed the first allowed order if null isn’t allowed, so the icon and the data match on initial paint.
+* Q: How do you handle server vs client sorting?
+    * A: One onChange path. If sortMode='server' and onSortChange is provided, I forward the new SortingState. Otherwise I update context state and let TanStack compute the client result.
+* Q: What about performance at 10k rows?
+    * A: Memoized column defs + minimal state writes today; for 10k we’d add row virtualization (TanStack Virtual), consider column virtualization for wide tables, and debounced resize events.
+* Q: Accessibility?
+    * A: Sort controls are buttons with accurate labels describing the next state; aria-sort on headers reflects the current state. Tooltip triggers are focusable; resize is keyboard operable.
+* Q: How did you avoid the double borders with resizing?
+    * A: Resizer gets its own thin line via .resizable .resizer. When resizing is enabled, I suppress the grid’s right border on header cells (especially the last child) to avoid visual doubling.
 
 ______________________________________________________________
 
@@ -316,21 +322,29 @@ This is a common interview follow-up; having it in your pocket shows polish.
 
 How it fits with DataTable.tsx
 * InnerDataTable reads and writes sorting & rowSelection through this context (so header buttons, selection cells, and any future controls stay in sync).
-* It also publishes the TanStack instance into context:    useEffect(() => {
-*   dispatch({ type: 'SET_TABLE_INSTANCE', payload: table })
-* }, [table, dispatch])
+* It also publishes the TanStack instance into context:
+```
+useEffect(() => {
+dispatch({ type: 'SET_TABLE_INSTANCE', payload: table })
+}, [table, dispatch])
+```
+
 *    That makes the instance available to injected columns and future features (keyboard shortcuts, dev tools), without passing it down through props.
 Common questions & answers
-Q: Why a reducer instead of multiple useStates? A: Sorting, selection, and the instance are related pieces of UI state; a reducer guarantees updates are predictable and serializable, and gives you a single audit trail (easy to extend with logging or undo/redo if needed).
-Q: Any pitfalls with generics in contexts? A: React can’t carry a runtime generic, so you use unknown at the context boundary and a generic hook to recover types. It’s type-safe at call sites (consumers specify <TData>), and avoids any.
-Q: We saw a “Hooks order changed” warning earlier—what causes that? A: That error appears when hooks are conditionally called or when hook calls are reordered between renders. In this file the order is fixed (useReducer then useContext in consumers). The warning likely came from toggling code in DataTable.tsx (commenting/uncommenting hooks or moving useMemo blocks inside conditions). The rule of thumb: never call hooks inside conditionals or early returns; keep their order static.
-Q: How would you make this more scalable?
-* Split state/dispatch contexts (above) to reduce re-renders.
-* Add selectors (e.g., useSorting(), useRowSelection()) to isolate component subscriptions and improve performance.
-* Accept an optional initialState prop (useful for restoring a saved view).
-* Consider exposing a reset action or a batch helper if multiple updates should be atomic.
+
+* Q: Why a reducer instead of multiple useStates?
+    * A: Sorting, selection, and the instance are related pieces of UI state; a reducer guarantees updates are predictable and serializable, and gives you a single audit trail (easy to extend with logging or undo/redo if needed).
+* Q: Any pitfalls with generics in contexts?
+    * A: React can’t carry a runtime generic, so you use unknown at the context boundary and a generic hook to recover types. It’s type-safe at call sites (consumers specify <TData>), and avoids any.
+* Q: We saw a “Hooks order changed” warning earlier—what causes that?
+    * A: That error appears when hooks are conditionally called or when hook calls are reordered between renders. In this file the order is fixed (useReducer then useContext in consumers). The warning likely came from toggling code in DataTable.tsx (commenting/uncommenting hooks or moving useMemo blocks inside conditions). The rule of thumb: never call hooks inside conditionals or early returns; keep their order static.
+* Q: How would you make this more scalable?
+    * Split state/dispatch contexts (above) to reduce re-renders.
+    * Add selectors (e.g., useSorting(), useRowSelection()) to isolate component subscriptions and improve performance.
+    * Accept an optional initialState prop (useful for restoring a saved view).
+    * Consider exposing a reset action or a batch helper if multiple updates should be atomic.
 Q: Why keep state in context at all? Why not in TanStack only? TanStack owns table mechanics; the Context stores app-level decisions (e.g., single vs. multi select behavior, server vs. client sorting flags, and a stable instance reference). This separation makes it easy to:
-* swap modes (client ↔ server),
-* inject custom columns,
-* and coordinate future features (row grouping, inline edit state) without coupling everything to TanStack internals.
+    * swap modes (client ↔ server),
+    * inject custom columns,
+    * and coordinate future features (row grouping, inline edit state) without coupling everything to TanStack internals.
 
