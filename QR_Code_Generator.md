@@ -65,20 +65,24 @@ Concrete artifacts to bring (or describe)
 * Rollback plan: revert to previous minor; feature flag toggles.
 
 Snappy Q&A you can reuse
-Q: How did you ensure Retry is focusable when showing the Alert? A: I set retryDisabled:false in the invalid path and optionally shift focus:
-
+Q: How did you ensure Retry is focusable when showing the Alert? 
+   * A: I set retryDisabled:false in the invalid path and optionally shift focus:
+```
 this.setState({ showError: true, retryDisabled: false }, () => {
   this.retryBtnRef?.focus();
 });
+```
 
 (Keep a ref on the Retry button; improves keyboard UX.)
 
-Q: How would you validate URLs robustly? A:
-
+Q: How would you validate URLs robustly? 
+A:
+```
 const isValidUrl = (v) => {
   try { const u = new URL(v); return ['http:', 'https:', 'otpauth:', 'com.rsa.securid:'].includes(u.protocol); }
   catch { return false; }
 }
+```
 Then gate state changes on isValidUrl(qRValue).
 
 Q: How did you keep tests stable through the migration? A: Test by role/label/testid, avoid implementation details, and pin regressions with Cypress E2E for critical flows.
