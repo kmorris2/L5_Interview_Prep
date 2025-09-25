@@ -64,7 +64,8 @@ Concrete artifacts to bring (or describe)
 * Test matrix: unit (RTL), E2E (Cypress), lint/TS, bundle check.
 * Rollback plan: revert to previous minor; feature flag toggles.
 
-Snappy Q&A you can reuse
+**Snappy Q&A you can reuse**
+
 Q: How did you ensure Retry is focusable when showing the Alert? 
    * A: I set retryDisabled:false in the invalid path and optionally shift focus:
 ```
