@@ -1,13 +1,13 @@
 # QR App Generator Tech interview 
 
 
-## QR App Generator
+### QR App Generator
 
 - Had to upgrade MUI from v4 to v11 so then I could migrate to Canvas v7
 - Added with the team’s consent emotion React (what is emotion react?)
 - They were behind on Praxis versioning so updated that as well from v20 to v22
 
-5-minute opening narrative (use this to set context)
+## 5-minute opening narrative (use this to set context)
 * Problem & constraints: “I owned the migration of a React app from MUI v4→v5, then to a new component library. Goals: remove JSS, standardize theming, unblock React 18, keep visual parity, and stabilize CI.”
 * Key choices:
     * Picked ThemeProvider at root, replaced v4 imports, removed adaptV4Theme (deprecated), moved to Emotion (then to new lib).
@@ -19,7 +19,7 @@
 * Results: zero prod downtime, green tests, faster local build, simpler styling surface area, documented runbook.
 * Lessons: lockstep upgrades (React + UI), treat tests as contracts, and keep migrations reversible with small PRs.
 
-Likely question areas & crisp answers
+## Likely question areas & crisp answers
 1) “Why this framework/library?” (and alternatives)
 * Why new UI library: design system alignment, long-term maintenance, theming tokens, performance (lighter runtime CSS), first-class React 18 support.
 * Alternatives considered: Staying with MUI (pros: mature ecosystem; cons: peer-dep friction & theming differences with your org’s DS), Tailwind + headless UI (pros: control & perf; cons: more primitives to wire).
@@ -58,13 +58,13 @@ Likely question areas & crisp answers
 * i18n: externalize strings; RTL layout checks.
 * Offline mode: service worker to cache generator.
 
-Concrete artifacts to bring (or describe)
+## Concrete artifacts to bring (or describe)
 * Before/after dependency graph (React/MUI/emotion/new lib).
 * Theme diagram: where ThemeProvider lives; token mapping.
 * Test matrix: unit (RTL), E2E (Cypress), lint/TS, bundle check.
 * Rollback plan: revert to previous minor; feature flag toggles.
 
-**Snappy Q&A you can reuse**
+## Snappy Q&A you can reuse
 
 Q: How did you ensure Retry is focusable when showing the Alert? 
    * A: I set retryDisabled:false in the invalid path and optionally shift focus:
@@ -92,7 +92,7 @@ Q: How did you keep tests stable through the migration? 
 A: Test by role/label/testid, avoid implementation details, and pin regressions with Cypress E2E for critical flows.
 
 
-React Testing Library vs Enzyme (benefits to emphasize)
+## React Testing Library vs Enzyme (benefits to emphasize)
 * Tests behavior, not internals: RTL queries the DOM like a user (getByRole, getByLabelText) vs Enzyme poking at component instance/state. This reduces brittle tests and aligns with real UX.
 * Future-proof with modern React: RTL works with hooks, Suspense, concurrent features; Enzyme has lagged behind React’s faster release cadence and lacks full support for newer APIs.
 * Encourages accessible markup: Because you query by role/name, RTL nudges you toward proper labels and ARIA—improving a11y and test stability.
