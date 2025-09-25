@@ -79,13 +79,6 @@
 “How did this evolve?”
 You could describe a timeline like:
 
-| Phase | Right Aligned |
-|:-------------|--------------:|
-| ✅ Initial Spike       | Build out the base dropdown using static rendering       |
-| Item B       | $25.50        |
-
-
-
 |Phase	|Focus|
 |---|---|
 |✅ Initial Spike|	Build out the base dropdown using static rendering |
@@ -96,7 +89,7 @@ You could describe a timeline like:
 
 Also highlight where you got feedback from UX/Accessibility team and how that shaped the final version.
 
-🚧 6. Challenges Faced
+### 🚧 6. Challenges Faced
 “What was hard, and how did you solve it?”
 Be honest here — some good talking points:
 * Ensuring NVDA/JAWS read the right option with virtualization.
@@ -104,7 +97,7 @@ Be honest here — some good talking points:
 * Managing ref behavior inside virtualized lists (e.g., delayed rendering).
 * Maintaining scroll alignment when updating currentIndex.
 
-🔄 7. Potential Extensions
+### 🔄 7. Potential Extensions
 “How would you modify this to support X?”
 Be prepared to answer how you’d:
 * ✅ Add multi-select (checkboxes or chips)
@@ -113,7 +106,7 @@ Be prepared to answer how you’d:
 * ✅ Expose public API methods (e.g. .openDropdown(), .resetSelection())
 If you've already structured SelectOptionsList and useDropdownNavigation generically, make sure to call that out as forward-thinking.
 
-🗣️ Final Tips for Interview
+### 🗣️ Final Tips for Interview
 * Practice talking aloud through one option → keyboard navigation → selection → focus.
 * Use visual aids if allowed: Show the rendered DOM + virtualized items.
 * Prepare a few good questions to ask them, like:
@@ -123,42 +116,42 @@ If you've already structured SelectOptionsList and useDropdownNavigation generic
 
 
 
-Gaps & improvements in SingleSelect.tsx
+## <u>Gaps & improvements in SingleSelect.tsx</u>
 
-1) Accessibility correctness (combobox vs button+listbox)
-Right now the root div has role="combobox", but the control is actually a button that opens a popup listbox. WAI-ARIA 1.2 patterns require specific linkages:
+### 1) Accessibility correctness (combobox vs button+listbox)
+Right now the root div has role="combobox", but the control is actually a button that opens a popup **listbox**. WAI-ARIA 1.2 patterns require specific linkages:
 * If you keep a button + listbox pattern (not a text input combobox), use:
     * Button: aria-haspopup="listbox", aria-expanded, aria-controls="<popup id>"
     * Popup list: role="listbox" with active option role="option" and aria-selected="true"
     * Root element should not be role="combobox"; let the button carry the interactive semantics.
 * If you truly want an ARIA combobox, that implies an input-like control with role="combobox", aria-controls, aria-expanded, aria-activedescendant, etc. That’s heavier and requires managing focus & typeahead.
-Action:
+**Action:**
 * Remove role="combobox" from the outer div.
 * On the toggle button add aria-haspopup="listbox" and ensure aria-controls targets the element with role="listbox" (your DropdownShell.Content).
 
 
 
-2) ID collisions & id-optional bugs
+### 2) ID collisions & id-optional bugs
 You set the container div id={id} and render a hidden <input id={id}>. That’s an invalid duplicate DOM id. Also, if id is undefined, you compute things like ${id}_content which becomes "undefined_content".
-Action:
-* Make id required, or generate stable IDs internally (e.g., useId()).
+**Action:**
+* Make id **required**, or generate stable IDs internally (e.g., useId()).
 * Use distinct IDs: container id, hidden input id, button id, popup id, list id.
 
 Example:
-
+```
 const autoId = useId(); // React 18+
 const baseId = id ?? `ss-${autoId}`;
 const inputId = `${baseId}-input`;
 const buttonId = `${baseId}-button`;
 const listboxId = `${baseId}-listbox`;
 const popupId = `${baseId}-popup`;
+```
 
-
-3) Tree search performance (flatten on every render)
+### 3) Tree search performance (flatten on every render)
 flattenTree is recreated each render and you do a full flatten + find on every render. On large trees this is expensive and scales poorly.
 Action:
 * Build a map once with useMemo and do O(1) lookups.
-
+```
 const idToNode = useMemo(() => {
   if (variant !== 'tree') return null;
   const map = new Map<string, TreeNode>();
@@ -175,19 +168,19 @@ const selectedOption = useMemo(() => {
   const list = options as Option[];
   return list.find(o => o.id === value);
 }, [idToNode, options, value, variant]);
+```
 
-
-6) Forward a ref & optional controlled open state
+### 4) Forward a ref & optional controlled open state
 Consumers often need to focus the toggle or control the popup externally (forms, validation, or menus). Forwarding the ref unlocks this and an optional controlled open state is commonly requested.
 Action:
 * forwardRef<HTMLButtonElement, Props> and expose ref on the toggle.
 * Optionally accept isOpen/onOpenChange to support controlled mode (keep uncontrolled as default).
-7) ReadOnly & Disabled semantics
+### 5) ReadOnly & Disabled semantics
 * If isReadOnly, the button is still tabbable and interactive visually. Add aria-readonly="true" and consider not rendering an interactive chevron, or at least set aria-hidden and remove hover affordances.
 * If isDisabled, rely on disabled and add aria-disabled="true" on the wrapper for extra clarity.
 
 
-11) Long list performance (future-proof)
+### 6) Long list performance (future-proof)
 You mentioned virtualization elsewhere—call it out in interview:
 * For long flat lists, virtualize the SelectOptionsList.
 * For trees, use windowed rendering per expanded branch.
@@ -195,21 +188,21 @@ You mentioned virtualization elsewhere—call it out in interview:
 
 
 
-Gaps & improvements in useDropdownNavigation.ts
+## <u>Gaps & improvements in useDropdownNavigation.ts</u>
 
 
-1) Selected index doesn’t sync
+### 1) Selected index doesn’t sync
 The “sync to selectedIndex” logic lives in an effect that only depends on [options]. If selectedIndex changes (e.g., controlled parent), your hook won’t react. Also, you’re reading currentIndex in that effect but not listing it in deps.
-Fix: Make a dedicated effect for external selection sync:
-
+**Fix:** Make a dedicated effect for external selection sync:
+```
 useEffect(() => {
   if (selectedIndex != null && selectedIndex >= 0) {
     setCurrentIndex(selectedIndex);
     moveFocusToIndex(selectedIndex);
   }
 }, [selectedIndex]);
+```
 
-
-3) Event handlers re-bound on every render
+### 2) Event handlers re-bound on every render
 You attach listeners inside an effect whose deps include currentIndex and options, which recreates handlers and re-binds events often. That’s unnecessary work and risks subtle bugs.
 Fix: useCallback the handlers so they’re stable; then bind once, and refer to “latest state” via refs if needed.
