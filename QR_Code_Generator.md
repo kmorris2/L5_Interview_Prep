@@ -104,4 +104,6 @@ A: Test by role/label/testid, avoid implementation details, and pin regressions 
 
 Emotion react library was installed to upgrade from MUI v4 to MUI v5. If it is still in the code, that is because the team still wanted it there. I advised them that it is no longer needed and serves them no use but they kept it. I advised them to remove it in their future work
 
+Emotion is a performant and flexible CSS-in-JS library that MUI (Material-UI) uses as its default styling engine for versions 5 and above.
+
 
